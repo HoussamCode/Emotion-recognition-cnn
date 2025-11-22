@@ -1,1 +1,1 @@
-![Accuracy](screenshot/CNNss.png)
+![Accuracy](screenshot/CNNss.PNG)
