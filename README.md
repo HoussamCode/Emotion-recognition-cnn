@@ -1,0 +1,1 @@
+![Accuracy](screenshot/CNNss.png)
