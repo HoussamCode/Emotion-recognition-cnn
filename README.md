@@ -1,36 +1,36 @@
 ![Accuracy](screenshot/CNNss.PNG)
 
-Rapport du Projet : Classification des Émotions avec un Réseau de Neurones Convolutif (CNN)
-1. Introduction
+# Rapport du Projet : Classification des Émotions avec un Réseau de Neurones Convolutif (CNN)
+## 1. Introduction
 
 L’objectif de ce projet est de construire un modèle capable de reconnaître différentes émotions humaines à partir d’images.
-Pour cela, nous utilisons un réseau de neurones convolutif (CNN), un type de modèle particulièrement adapté à l’analyse d’images.
+Pour cela, nous utilisons un réseau de neurones convolutif (CNN), spécialement adapté à l'analyse d'images.
 
-Le dataset contient des images de visages organisées en 7 émotions.
+Le dataset contient des visages classés selon 7 émotions.
 Le code permet de :
 
 Préparer les données
 
 Visualiser des images
 
-Construire un modèle CNN
+Construire un CNN
 
-L’entraîner et le valider
+Entraîner et valider
 
-L’évaluer
+Évaluer
 
-Tester les prédictions finales
+Tester les prédictions
 
-2. Chargement du Dataset
+## 2. Chargement du Dataset
 
 Le dataset se trouve dans :
 
 C:\Users\chhou\PycharmProjects\PythonProject3\emotions
 
 
-Les images sont organisées par émotion (un dossier = une émotion).
+Les images sont organisées par émotion (un dossier par classe).
 
-Le chargement utilise image_dataset_from_directory() :
+Chargement avec image_dataset_from_directory() :
 
 train_dataset = tf.keras.utils.image_dataset_from_directory(..., validation_split=0.2, subset="training")
 validation_dataset = tf.keras.utils.image_dataset_from_directory(..., validation_split=0.2, subset="validation")
@@ -41,52 +41,52 @@ full_dataset = tf.keras.utils.image_dataset_from_directory(...)
 
 20% → validation
 
-15% des données reshufflées → test
+15% → test (généré à partir du dataset complet reshufflé)
 
-Les images sont redimensionnées en 48×48 pixels, batch size = 32.
+Les images sont redimensionnées à 48×48 pixels, batch size = 32.
 
-3. Visualisation des Données
+## 3. Visualisation des Données
 
-Avant l’entraînement, un échantillon de 9 images est affiché :
+Avant l’entraînement, 9 images sont affichées :
 
-Chaque image montre un visage
+Chaque image = un visage
 
-Avec l'émotion réelle en titre
+Titre = émotion réelle
 
 plt.imshow(images[i].numpy().astype("uint8"))
 plt.title(class_names[labels[i]])
 
 
-Cela confirme que le chargement du dataset est correct.
+Ce contrôle visuel permet de confirmer la bonne importation du dataset.
 
-4. Conception du Modèle CNN
+## 4. Conception du Modèle CNN
 
-Le modèle est composé de plusieurs blocs :
+Le modèle suit une architecture classique :
 
-🔹 1. Normalisation
+### 4.1- Normalisation
 tf.keras.layers.Rescaling(1./255)
 
-🔹 2. Convolutions + MaxPooling
+### 4.2- Convolutions + MaxPooling
 
-Conv2D(32) : extraction de caractéristiques simples
+Conv2D(32) → caractéristiques simples
 
-Conv2D(64) : extraction intermédiaire
+Conv2D(64) → caractéristiques moyennes
 
-Conv2D(128) : extraction avancée
+Conv2D(128) → caractéristiques complexes
 
 MaxPooling2D() entre chaque convolution
 
-🔹 3. Couches Denses
+### 4.3- Couches Finales
 
 Flatten()
 
-Dense(128, relu)
+Dense(128, activation="relu")
 
-Dense(7, softmax) : 7 classes d’émotions
+Dense(7, activation="softmax")
 
-Architecture simple et efficace pour des images 48×48.
+Cette architecture équilibre simplicité et performance.
 
-5. Compilation et Entraînement
+## 5. Compilation et Entraînement
 
 Le modèle est compilé avec :
 
@@ -94,39 +94,39 @@ Optimiseur : Adam
 
 Loss : sparse_categorical_crossentropy
 
-Metric : accuracy
+Métrique : accuracy
 
-Entraînement sur 30 epochs :
+Entraînement sur 30 époques :
 
 modelCNN.fit(train_dataset, epochs=30, validation_data=validation_dataset)
 
 
 Suivi :
 
-précision d’entraînement
+Précision d’entraînement
 
-précision de validation
+Précision en validation
 
-6. Évaluation
+## 6. Évaluation du Modèle
 
-Le modèle est évalué sur le dataset de test :
+L’évaluation se fait sur le dataset de test :
 
 modelCNN.evaluate(test_dataset, verbose=2)
 
 
-Ce test mesure les performances réelles du modèle sur des images jamais vues.
+Cette mesure reflète la performance sur des images jamais vues.
 
-7. Prédictions Finales
+## 7. Prédictions Finales
 
-Le modèle effectue des prédictions :
+Les prédictions sont réalisées avec :
 
-Probabilités générées par model.predict
+prediction = modelCNN.predict(images)
+predicted_classes = np.argmax(prediction, axis=1)
 
-Classe prédite = argmax
 
-Affichage sous la forme :
+Puis affichage :
 
 Vrai: <classe réelle> — Prédit: <classe prédite>
 
 
-Cela permet de détecter les erreurs ou confusions entre émotions.
+Cela permet de visualiser la qualité du modèle et identifier les confusions.
